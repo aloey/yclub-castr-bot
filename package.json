@@ -11,9 +11,13 @@
   "license": "ISC",
   "dependencies": {
     "botbuilder": "^3.8.4",
+    "dotenv": "^4.0.0",
     "restify": "^5.0.0"
   },
   "devDependencies": {
+    "eslint": "^4.12.1",
+    "eslint-config-airbnb-base": "^12.1.0",
+    "eslint-plugin-import": "^2.8.0",
     "request": "^2.81.0",
     "zip-folder": "^1.0.0"
   }
