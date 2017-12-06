@@ -1,6 +1,15 @@
 
+# VSCode directory
 .vscode/
 
+# Dependency directories
 node_modules/
+
+# dotenv environment variables file
+.env
+
+# Eslint rule
+.eslintrc.json
+
 *.js.map
 package-lock.json
