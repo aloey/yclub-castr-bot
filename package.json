@@ -11,14 +11,17 @@
   "license": "ISC",
   "dependencies": {
     "botbuilder": "^3.8.4",
+    "botbuilder-azure": "^3.0.4",
     "dotenv": "^4.0.0",
+    "moment-timezone": "^0.5.14",
+    "request": "^2.83.0",
+    "request-promise": "^4.2.2",
     "restify": "^5.0.0"
   },
   "devDependencies": {
     "eslint": "^4.12.1",
     "eslint-config-airbnb-base": "^12.1.0",
     "eslint-plugin-import": "^2.8.0",
-    "request": "^2.81.0",
     "zip-folder": "^1.0.0"
   }
 }
