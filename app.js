@@ -203,32 +203,33 @@ bot.dialog(constants.features.CARD_NEWS, [
 
 // Dialog - Support
 bot.dialog(constants.features.SUPPORT, [
-    function (session, args) {
+    function (session, args, next) {
+        session.conversationData.support = session.conversationData.support || {};
         if (args && args.customDate) {
             // Custom date prompt
             builder.Prompts.text(session, messages.customDate[locale]);
         } else {
             // Date option prompt (default)
-            if (!(args && args.changeDate)) {
-                session.send(messages.support[locale]);
-            }
+            if (!(args && args.changeDate) && session.conversationData.support.selectedDate) return next();
+            if (!(args && args.reprompt)) session.send(messages.support[locale]);
             request({
                 url: constants.urls.supportDateTime,
                 method: 'GET',
                 headers: { 'Content-Type': 'application/json' },
                 qs: { type: 'date' },
+                json: true,
             })
                 .then((response) => {
-                    const dates = JSON.parse(response).data.date;
+                    const dates = response.data.date;
                     // let blogTable = '## Blogs\n---\n|Date||Title|\n|:---|---|:---|';
                     if (dates.length > 0) {
-                        session.conversationData.dates = {};
+                        session.conversationData.support.dates = {};
                         const dateOptions = dates.map((date) => {
                             const dateObj = moment.tz(date, 'MMDDYYYY', timezone);
                             const formattedDate = dateObj.format(dateFormat[locale].display);
                             const dayOfWeek = dateObj.weekday();
                             const dateString = `${formattedDate} (${dayOfWeek})`;
-                            session.conversationData.dates[dateString] = date;
+                            session.conversationData.support.dates[dateString] = date;
                             return dateString;
                         });
                         dateOptions.push(constants.custom[locale]);
@@ -238,18 +239,21 @@ bot.dialog(constants.features.SUPPORT, [
                 });
         }
     },
-    function (session, result) {
-        if (Object.values(constants.custom).includes(result.response.entity)) {
+    function (session, results, next) {
+        if (session.conversationData.support.selectedTime) return next();
+        if (Object.values(constants.custom).includes(results.response.entity)) {
             // Custom date option selected
-            session.replaceDialog(constants.features.SUPPORT, { customDate: true });
-            return;
+            return session.replaceDialog(constants.features.SUPPORT, { customDate: true, reprompt: true });
         }
-        if (session.conversationData.dates.hasOwnProperty(result.response.entity)) {
+        if (session.conversationData.support.dates.hasOwnProperty(results.response.entity)) {
             // Option selected
-            session.conversationData.selectedDate = session.conversationData.dates[result.response.entity];
-        } else if (result.response.match(dateFormat[locale].pattern)) {
+            session.conversationData.support.selectedDate = {
+                display: results.response.entity,
+                date: session.conversationData.support.dates[results.response.entity],
+            };
+        } else if (results.response.match(dateFormat[locale].pattern)) {
             // Custom date entered
-            const matchStr = result.response.match(dateFormat[locale].pattern);
+            const matchStr = results.response.match(dateFormat[locale].pattern);
             const selectedDate = dateFormat[locale].ord.map((index) => {
                 if (index < 3) return `0${matchStr[index]}`.slice(-2);
                 return matchStr[index];
@@ -260,32 +264,34 @@ bot.dialog(constants.features.SUPPORT, [
             if (dateObj.diff(now) < 0 || bound.diff(dateObj) < 0) {
                 // Custom date incorrect date
                 session.send(messages.badDate[locale]);
-                session.replaceDialog(constants.features.SUPPORT, { customDate: true });
-                return;
+                return session.replaceDialog(constants.features.SUPPORT, { customDate: true, reprompt: true });
             }
-            session.conversationData.selectedDate = selectedDate;
+            session.conversationData.support.selectedDate = {
+                display: dateObj.format(dateFormat[locale].display),
+                date: selectedDate,
+            };
         } else {
             // Custom date incorrect format
             session.send(messages.badFormat[locale]);
-            session.replaceDialog(constants.features.SUPPORT, { customDate: true });
-            return;
+            return session.replaceDialog(constants.features.SUPPORT, { customDate: true, reprompt: true });
         }
         request({
             url: constants.urls.supportDateTime,
             method: 'GET',
             headers: { 'Content-Type': 'application/json' },
-            qs: { type: 'time', date: session.conversationData.selectedDate },
+            qs: { type: 'time', date: session.conversationData.support.selectedDate.date },
+            json: true,
         })
             .then((response) => {
-                const times = JSON.parse(response).data.time;
+                const times = response.data.time;
                 // let blogTable = '## Blogs\n---\n|Date||Title|\n|:---|---|:---|';
                 if (times.length > 0) {
-                    session.conversationData.times = {};
+                    session.conversationData.support.times = {};
                     const timeOptions = times.map((time) => {
                         const timeObj = moment.tz(timezone).hour(time.hour).minute(time.minute);
                         const formattedTime = timeObj.format(timeFormat[locale]);
                         const timeString = formattedTime;
-                        session.conversationData.times[timeString] = time.schedule;
+                        session.conversationData.support.times[timeString] = time.schedule;
                         return timeString;
                     });
                     timeOptions.push(constants.changeDate[locale]);
@@ -294,43 +300,75 @@ bot.dialog(constants.features.SUPPORT, [
                 } else {
                     // No available time found for the chosen date
                     session.send(messages.nonAvailable[locale]);
-                    session.replaceDialog(constants.features.SUPPORT, { changeDate: true });
+                    session.replaceDialog(constants.features.SUPPORT, { changeDate: true, reprompt: true });
                 }
             });
     },
-    function (session, result) {
-        if (Object.values(constants.changeDate).includes(result.response.entity)) {
+    function (session, results, next) {
+        if (session.conversationData.support.privPolicyConfirmed) return next();
+        if (Object.values(constants.changeDate).includes(results.response.entity)) {
             // Change date requested
-            session.replaceDialog(constants.features.SUPPORT, { changeDate: true });
-        } else if (session.conversationData.times.hasOwnProperty(result.response.entity)) {
+            session.replaceDialog(constants.features.SUPPORT, { changeDate: true, reprompt: true });
+        } else if (session.conversationData.support.times.hasOwnProperty(results.response.entity)) {
             // Option selected
-            session.conversationData.selectedTime = session.conversationData.times[result.response.entity];
+            session.conversationData.support.selectedTime = {
+                display: results.response.entity,
+                schedule: session.conversationData.support.times[results.response.entity],
+            };
             session.send(messages.privPolicyWarn[locale]);
             builder.Prompts.choice(session, messages.privPolicyText[locale], constants.confirm[locale], { listStyle: 3 });
         }
     },
-    function (session, result) {
-        if (constants.confirm[locale][result.response.entity] === constants.answer.yes) {
-            builder.Prompts.text(messages.namePhone);
+    function (session, results) {
+        if (session.conversationData.support.privPolicyConfirmed || constants.confirm[locale][results.response.entity] === constants.answer.yes) {
+            session.conversationData.support.privPolicyConfirmed = true;
+            builder.Prompts.text(session, messages.namePhone[locale]);
         } else {
-            session.endDialog(messages.privInfoNotAllowed);
+            session.send(messages.privInfoNotAllowed[locale]);
+            session.endConversation().beginDialog(constants.features.MAIN);
         }
     },
-    function (session, result) {
-
+    function (session, results) {
+        if (results.response) {
+            const nameMatch = results.response.match(constants.nameFormat);
+            const phoneMatch = results.response.match(constants.phoneFormat);
+            if (!nameMatch || !phoneMatch) {
+                session.send(messages.badFormat[locale]);
+                session.replaceDialog(constants.features.SUPPORT, { reprompt: true });
+                return;
+            }
+            session.conversationData.support.name = nameMatch[1];
+            session.conversationData.support.phoneNumber = `${phoneMatch[1]}-${phoneMatch[2]}-${phoneMatch[3]}`;
+            builder.Prompts.text(session, messages.question[locale](nameMatch[1]));
+        }
+    },
+    function (session, results) {
+        if (results.response) {
+            const data = session.conversationData.support;
+            request({
+                url: constants.urls.supportDateTime,
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: {
+                    name: data.name,
+                    phone: data.phoneNumber,
+                    date: data.selectedDate.date,
+                    schedule: data.selectedTime.schedule,
+                    question: results.response,
+                },
+                json: true,
+            })
+                .then((response) => {
+                    if (response.success) {
+                        session.send(messages.supportSuccess[locale](session.conversationData.support));
+                    } else {
+                        session.send('Failed to make appointment. API failture.');
+                    }
+                    session.endConversation().beginDialog(constants.features.MAIN);
+                });
+        }
     }
 ]);
-
-
-// 캐스터 텍스트: 
-// 유져 입력: 뽀로리 xxx-xxx-xxxx
-
-// 케스터 텍스트: 감사합니다. 보다 원활한 진행을 위하여 가능하시다면 궁금하신 사항을 적어주시기 바랍니다. 예1) 캐스터의 부가서비스 사용에 대해 문의드리려 합니다. 예2) 광고대행사 입니다. 사용 비용 및 사용 방법에 대해 문의드리려합니다. 
-// 유져입력: 텍스트 입력 
-
-// 캐스터 텍스트: 잘 받았습니다. 캐스터 고객관리 팀에서 2017년 08월 04일 오후 03시에 010-2121-2121 (뽀로리)로  연락드리도록 하겠습니다. 곧 찾아뵙겠습니다. 관심가져주셔서 감사합니다. 좋은 하루 보내세요.
-// 메인 옵션 제공 
-
 
 // Initiate main menu on start
 bot.on('conversationUpdate', (message) => {
