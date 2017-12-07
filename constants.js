@@ -84,6 +84,9 @@ const blogListUrl = `${castrHost}blog/blog`;
 const cardNewsListUrl = `${castrHost}blog/card-news`;
 const dateTimeListUrl = `${castrHost}support/appointment`;
 
+const locale = 'kr';
+const timezone = 'Asia/Seoul';
+
 exports.features = features;
 exports.mainMenu = mainMenu;
 exports.mainOptions = mainOptions;
@@ -102,3 +105,5 @@ exports.appointmentBound = appointmentBound;
 exports.answer = answer;
 exports.nameFormat = nameFormat;
 exports.phoneFormat = phoneFormat;
+exports.locale = locale;
+exports.timezone = timezone;
