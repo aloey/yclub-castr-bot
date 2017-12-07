@@ -55,6 +55,12 @@ module.exports = {
     namePhone: {
         kr: '성명과 연락가능하신 전화번호를 입력해주시기 바랍니다. 예) 뽀로리 010-5228-3023',
     },
+    question: {
+        kr: name => `감사합니다 **${name}** 님. 보다 원활한 진행을 위하여 가능하시다면 궁금하신 사항을 적어주시기 바랍니다.\n\n예1) 캐스터의 부가서비스 사용에 대해 문의드리려 합니다.\n\n예2) 광고대행사 입니다. 사용 비용 및 사용 방법에 대해 문의드리려합니다.`,
+    },
+    supportSuccess: {
+        kr: support => `잘 받았습니다 **${support.name}** 님. 캐스터 고객관리 팀에서 **${support.selectedDate.display}** **${support.selectedTime.display}** 에 *__${support.phoneNumber}__* 로 연락드리도록 하겠습니다. 곧 찾아뵙겠습니다. 관심가져주셔서 감사합니다. 좋은 하루 보내세요.`,
+    },
     report: {
         kr: '어카운트 고유 ID를 입력해주시기 바랍니다.',
     },

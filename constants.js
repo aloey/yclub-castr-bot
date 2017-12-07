@@ -60,6 +60,9 @@ const dateFormat = {
     },
 };
 
+const nameFormat = '^(.+?)\\s*\\d+';
+const phoneFormat = '\\D*(\\d{2,3})\\D*(\\d{3,4})\\D*(\\d{3,4})\\D*$';
+
 const timeFormat = {
     kr: 'H:mm',
     en: 'H:mm',
@@ -97,3 +100,5 @@ exports.changeDate = changeDate;
 exports.confirm = confirm;
 exports.appointmentBound = appointmentBound;
 exports.answer = answer;
+exports.nameFormat = nameFormat;
+exports.phoneFormat = phoneFormat;
