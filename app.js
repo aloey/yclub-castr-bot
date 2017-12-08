@@ -11,8 +11,7 @@ const constants = require('./constants');
 
 const mainDialog = require('./dialogs/main');
 const faqDialog = require('./dialogs/faq');
-const blogDialog = require('./dialogs/blog');
-const cardNewsDialog = require('./dialogs/cardnews');
+const infoDialog = require('./dialogs/info');
 const supportDialog = require('./dialogs/support');
 const reportDialog = require('./dialogs/report');
 
@@ -56,17 +55,18 @@ const bot = new builder.UniversalBot(connector, [
 
 // Dialog - Main menu
 bot.dialog(constants.features.MAIN, mainDialog)
-    .triggerAction({ matches: new RegExp(`^${constants.mainMenu.en.replace(' ', '\\s*')}$`, 'gi') })
-    .triggerAction({ matches: new RegExp(`^${constants.mainMenu.kr}$`, 'gi') });
+    .triggerAction({
+        matches: [
+            new RegExp(`^${constants.mainMenu.kr.replace(' ', '\\s*')}$`, 'gi'),
+            new RegExp(`^${constants.mainMenu.en.replace(' ', '\\s*')}$`, 'gi')
+        ],
+    });
 
 // Dialog - FAQ
 bot.dialog(constants.features.FAQ, faqDialog);
 
-// Dialog - Blog
-bot.dialog(constants.features.BLOG, blogDialog);
-
-// Dialog - Card News
-bot.dialog(constants.features.CARD_NEWS, cardNewsDialog);
+// Dialog - Information
+bot.dialog(constants.features.INFO, infoDialog);
 
 // Dialog - Support
 bot.dialog(constants.features.SUPPORT, supportDialog);

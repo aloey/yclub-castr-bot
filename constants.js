@@ -4,8 +4,7 @@ const appointmentBound = 2;
 const features = {
     MAIN: 'MAIN',
     FAQ: 'FAQ',
-    BLOG: 'BLOG',
-    CARD_NEWS: 'CARD_NEWS',
+    INFO: 'INFO',
     SUPPORT: 'SUPPORT',
     REPORT: 'REPORT',
 };
@@ -16,22 +15,20 @@ const answer = {
 };
 
 const mainMenu = {
-    kr: '메인메뉴',
+    kr: '메인 메뉴',
     en: 'Main menu',
 };
 
 const mainOptions = {
     kr: {
         질의응답: features.FAQ,
-        블로그: features.BLOG,
-        카드뉴스: features.CARD_NEWS,
+        정보: features.INFO,
         고객상담서비스: features.SUPPORT,
         리포트: features.REPORT,
     },
     en: {
         FAQ: features.FAQ,
-        Blogs: features.BLOG,
-        'Card News': features.CARD_NEWS,
+        Information: features.INFO,
         'Customer Support': features.SUPPORT,
         Reports: features.REPORT,
     },
