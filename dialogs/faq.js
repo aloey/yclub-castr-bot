@@ -36,14 +36,14 @@ module.exports = [
                     let stopQNA;
                     const lResult = JSON.parse(response);
                     session.send(lResult.answers[0].answer);
-                    session.replaceDialog(constants.features.FAQ, { reprompt: true });
+                    session.replaceDialog(constants.features.faq, { reprompt: true });
                 })
                 .catch((err) => {
                     let lResult;
                     lResult.answer = 'Unfortunately an error occurred. Try again.(fQnAMaker)';
                     lResult.score = 0;
                     session.send(lResult.answers[0].answer);
-                    session.replaceDialog(constants.features.FAQ, { reprompt: true });
+                    session.replaceDialog(constants.features.faq, { reprompt: true });
                 });
         }
     }

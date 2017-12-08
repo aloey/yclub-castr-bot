@@ -51,7 +51,7 @@ module.exports = [
         if (session.conversationData.support.selectedTime) return next();
         if (Object.values(constants.custom).includes(results.response.entity)) {
             // Custom date option selected
-            return session.replaceDialog(constants.features.SUPPORT, { customDate: true, reprompt: true });
+            return session.replaceDialog(constants.features.support, { customDate: true, reprompt: true });
         }
         if (session.conversationData.support.dates.hasOwnProperty(results.response.entity)) {
             // Option selected
@@ -72,7 +72,7 @@ module.exports = [
             if (dateObj.diff(now) < 0 || bound.diff(dateObj) < 0) {
                 // Custom date incorrect date
                 session.send(messages.badDate[locale]);
-                return session.replaceDialog(constants.features.SUPPORT, { customDate: true, reprompt: true });
+                return session.replaceDialog(constants.features.support, { customDate: true, reprompt: true });
             }
             session.conversationData.support.selectedDate = {
                 display: dateObj.format(dateFormat[locale].display),
@@ -81,7 +81,7 @@ module.exports = [
         } else {
             // Custom date incorrect format
             session.send(messages.badFormat[locale]);
-            return session.replaceDialog(constants.features.SUPPORT, { customDate: true, reprompt: true });
+            return session.replaceDialog(constants.features.support, { customDate: true, reprompt: true });
         }
         request({
             url: constants.urls.supportDateTime,
@@ -108,7 +108,7 @@ module.exports = [
                 } else {
                     // No available time found for the chosen date
                     session.send(messages.nonAvailable[locale]);
-                    session.replaceDialog(constants.features.SUPPORT, { changeDate: true, reprompt: true });
+                    session.replaceDialog(constants.features.support, { changeDate: true, reprompt: true });
                 }
             });
     },
@@ -116,7 +116,7 @@ module.exports = [
         if (session.conversationData.support.privPolicyConfirmed) return next();
         if (Object.values(constants.changeDate).includes(results.response.entity)) {
             // Change date requested
-            session.replaceDialog(constants.features.SUPPORT, { changeDate: true, reprompt: true });
+            session.replaceDialog(constants.features.support, { changeDate: true, reprompt: true });
         } else if (session.conversationData.support.times.hasOwnProperty(results.response.entity)) {
             // Option selected
             session.conversationData.support.selectedTime = {
@@ -133,7 +133,7 @@ module.exports = [
             builder.Prompts.text(session, messages.namePhone[locale]);
         } else {
             session.send(messages.privInfoNotAllowed[locale]);
-            session.endConversation().beginDialog(constants.features.MAIN);
+            session.endConversation().beginDialog(constants.features.main);
         }
     },
     function (session, results) {
@@ -142,7 +142,7 @@ module.exports = [
             const phoneMatch = results.response.match(constants.phoneFormat);
             if (!nameMatch || !phoneMatch) {
                 session.send(messages.badFormat[locale]);
-                session.replaceDialog(constants.features.SUPPORT, { reprompt: true });
+                session.replaceDialog(constants.features.support, { reprompt: true });
                 return;
             }
             session.conversationData.support.name = nameMatch[1];
@@ -172,7 +172,7 @@ module.exports = [
                     } else {
                         session.send('Failed to make appointment. API failture.');
                     }
-                    session.endConversation().beginDialog(constants.features.MAIN);
+                    session.endConversation().beginDialog(constants.features.main);
                 });
         }
     }

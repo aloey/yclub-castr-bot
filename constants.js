@@ -2,11 +2,17 @@
 const appointmentBound = 2;
 
 const features = {
-    MAIN: 'MAIN',
-    FAQ: 'FAQ',
-    INFO: 'INFO',
-    SUPPORT: 'SUPPORT',
-    REPORT: 'REPORT',
+    main: 'MAIN',
+    faq: 'FAQ',
+    info: 'INFO',
+    support: 'SUPPORT',
+    report: 'REPORT',
+};
+
+const informations = {
+    trend: 'TREND',
+    manual: 'MANUAL',
+    service: 'SERVICE',
 };
 
 const answer = {
@@ -21,16 +27,29 @@ const mainMenu = {
 
 const mainOptions = {
     kr: {
-        질의응답: features.FAQ,
-        정보: features.INFO,
-        고객상담서비스: features.SUPPORT,
-        리포트: features.REPORT,
+        질의응답: features.faq,
+        정보: features.info,
+        고객상담서비스: features.support,
+        리포트: features.report,
     },
     en: {
-        FAQ: features.FAQ,
-        Information: features.INFO,
-        'Customer Support': features.SUPPORT,
-        Reports: features.REPORT,
+        FAQ: features.faq,
+        Information: features.info,
+        'Customer Support': features.support,
+        Reports: features.report,
+    },
+};
+
+const infoSubOptions = {
+    kr: {
+        트렌드: informations.trend,
+        사용설명서: informations.manual,
+        서비스소개: informations.service,
+    },
+    en: {
+        Trend: informations.trend,
+        Manual: informations.manual,
+        'Castr Services': informations.service,
     },
 };
 
@@ -77,20 +96,20 @@ const confirm = {
 };
 
 const castrHost = 'http://api.dev.castr.ai/api/';
-const blogListUrl = `${castrHost}blog/blog`;
-const cardNewsListUrl = `${castrHost}blog/card-news`;
+const blogListUrl = `${castrHost}blog`;
 const dateTimeListUrl = `${castrHost}support/appointment`;
 
 const locale = 'kr';
 const timezone = 'Asia/Seoul';
 
 exports.features = features;
+exports.informations = informations;
 exports.mainMenu = mainMenu;
 exports.mainOptions = mainOptions;
+exports.infoSubOptions = infoSubOptions;
 exports.castrHost = castrHost;
 exports.urls = {
     blog: blogListUrl,
-    cardNews: cardNewsListUrl,
     supportDateTime: dateTimeListUrl,
 };
 exports.custom = custom;

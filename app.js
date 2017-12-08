@@ -54,7 +54,7 @@ const bot = new builder.UniversalBot(connector, [
 // bot.name = 'Castr';
 
 // Dialog - Main menu
-bot.dialog(constants.features.MAIN, mainDialog)
+bot.dialog(constants.features.main, mainDialog)
     .triggerAction({
         matches: [
             new RegExp(`^${constants.mainMenu.kr.replace(' ', '\\s*')}$`, 'gi'),
@@ -63,23 +63,23 @@ bot.dialog(constants.features.MAIN, mainDialog)
     });
 
 // Dialog - FAQ
-bot.dialog(constants.features.FAQ, faqDialog);
+bot.dialog(constants.features.faq, faqDialog);
 
 // Dialog - Information
-bot.dialog(constants.features.INFO, infoDialog);
+bot.dialog(constants.features.info, infoDialog);
 
 // Dialog - Support
-bot.dialog(constants.features.SUPPORT, supportDialog);
+bot.dialog(constants.features.support, supportDialog);
 
 // Dialog - Report
-bot.dialog(constants.features.REPORT, reportDialog);
+bot.dialog(constants.features.report, reportDialog);
 
 // Initiate main menu on start
 bot.on('conversationUpdate', (message) => {
     if (message.membersAdded) {
         message.membersAdded.forEach((identity) => {
             if (identity.id === message.address.bot.id) {
-                bot.beginDialog(message.address, constants.features.MAIN);
+                bot.beginDialog(message.address, constants.features.main);
             }
         });
     }
