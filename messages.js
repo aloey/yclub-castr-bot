@@ -24,9 +24,6 @@ module.exports = {
             kr: '캐스터에 관한 궁금하신 사항을 선택해주시기 바랍니다.',
         },
     },
-    // cardNews: {
-    //     kr: '캐스터의 카드뉴스 게시판에 오신것을 환영합니다. 보시고 싶은 토픽을 클릭해주시기 바랍니다.',
-    // },
     support: {
         kr: '현재 저희는 세가지 방법으로 고객님의 궁금증을 풀어드리고 있습니다. 첫번째는, 카톡 (ID name) 이나 페이스북 (link address)으로 메세지를 보내주시는 것 입니다. 두번째는, 이메일 (contact@castr.ai) 입니다. 세번째는, 전화 미팅 서비스입니다.',
     },
@@ -83,5 +80,91 @@ module.exports = {
     },
     badDate: {
         kr: '2개월 안으로 예약을 잡아주세요 ㅠㅠ',
+    },
+    reportFields: {
+        kr: {
+            '프로모션 이름': () => '\n\n', // 프로모션 이름:      “xxxxx” 
+            '프로모션 집행비 (사용량)': report => `${report.amountSpent} ${report.currency}\n\n`,
+            '프로모션 기간': report => `${report.dateStart}-${report.dateEnd}\n\n`,
+            '프로모션 장소': () => '\n\n', // 프로모션 장소: xxxx,xxxx,xxxx,xxxx
+            '목표 설정': () => '\n\n', // 목표 설정: 도달 (날짜 or 금액)  클릭 (날짜 or 금액) 구매 (날짜 or 금액) 
+            '집행비 분배': (report) => {
+                const currency = report.currency;
+                const facebook = [
+                    report.budget.facebook,
+                    (report.budget.facebook / report.amountSpent).toFixed(2)
+                ];
+                const instagram = [
+                    report.budget.instagram,
+                    (report.budget.instagram / report.amountSpent).toFixed(2)
+                ];
+                const audienceNetwork = [
+                    report.budget.audienceNetwork,
+                    (report.budget.audienceNetwork / report.amountSpent).toFixed(2)
+                ];
+                return `${constants.platform.kr.facebook} ${facebook[0]} ${currency} (${facebook[1]}%), ${constants.platform.kr.instagram} ${instagram[0]} (${instagram[1]}%), ${constants.platform.kr.audienceNetwork} ${audienceNetwork[0]} (${audienceNetwork[1]}%)\n\n`;
+            },
+            '총 노출 수': report => `${report.impressions.total} (1000개당: ${report.impressions.unitCost} ${report.currency})\n\n`,
+            '총 도달 수': report => `${report.reach.total} (1000개당: ${report.reach.unitCost} ${report.currency})\n\n`,
+            '총 링크클릭 수': report => `${report.linkClicks.total} (1개당: ${report.linkClicks.unitCost} ${report.currency}; 확률: ${report.linkClicks.rate}%)\n\n`,
+            '총 반응 수': (report) => {
+                let responses = `${report.responses.total} (`;
+                responses += `결제수단 입력: ${report.responses.addPaymentInfo}, `;
+                responses += `장바구니에 담기: ${report.responses.addToCart}, `;
+                responses += `찜하기: ${report.responses.addToWishlist}, `;
+                responses += `회원가입: ${report.responses.completeRegistration}, `;
+                responses += `결제 시도: ${report.responses.initiateCheckout}, `;
+                responses += `리드: ${report.responses.lead}, `;
+                responses += `검색: ${report.responses.search}, `;
+                responses += `컨텐츠 뷰: ${report.responses.viewContent})`;
+                return `${responses}\n\n`;
+            },
+            '총 구매 수': report => `${report.purchases.total} (1개당: ${report.purchases.unitCost} ${report.currency}; 확률: ${report.purchases.rate}%)\n\n`,
+            '최고실적 연령/성별 (링크클릭)': (report) => {
+                let mostLinkClicks = '\n\nTOP 5';
+                report.genderAge.mostLinkClicks.forEach((entry) => {
+                    mostLinkClicks += `\n\n${entry.gender} ${entry.age}: ${entry.value} (${entry.ratio}%)`;
+                });
+                return `${mostLinkClicks}\n\n`;
+            },
+            '최고실적 연령/성별 (구매)': (report) => {
+                let mostPurchases = '\n\nTOP 5';
+                report.genderAge.mostLinkClicks.forEach((entry) => {
+                    mostPurchases += `\n\n${entry.gender} ${entry.age}: ${entry.value} (${entry.ratio}%)`;
+                });
+                return `${mostPurchases}\n\n`;
+            },
+            '최고실적 위치 (링크클릭)': (report) => {
+                let mostLinkClicks = '\n\nTOP 5';
+                report.region.mostLinkClicks.forEach((entry) => {
+                    mostLinkClicks += `\n\n${entry.region}: ${entry.value} (${entry.ratio}%)`;
+                });
+                return `${mostLinkClicks}\n\n`;
+            },
+            '최고실적 위치 (구매)': (report) => {
+                let mostPurchases = '\n\nTOP 5';
+                report.region.mostLinkClicks.forEach((entry) => {
+                    mostPurchases += `\n\n${entry.region}: ${entry.value} (${entry.ratio}%)`;
+                });
+                return `${mostPurchases}\n\n`;
+            },
+            '최고실적 시간 (링크클릭)': (report) => {
+                let mostLinkClicks = '\n\nTOP 5';
+                report.hour.mostLinkClicks.forEach((entry) => {
+                    mostLinkClicks += `\n\n${entry.hour}시-${entry.hour + 1}시: ${entry.value} (${entry.ratio}%)`;
+                });
+                return `${mostLinkClicks}\n\n`;
+            },
+            '최고실적 시간 (구매)': (report) => {
+                let mostPurchases = '\n\nTOP 5';
+                report.hour.mostPurchases.forEach((entry) => {
+                    mostPurchases += `\n\n${entry.hour}시-${entry.hour + 1}시: ${entry.value} (${entry.ratio}%)`;
+                });
+                return `${mostPurchases}\n\n`;
+            },
+        },
+        en: {
+
+        },
     },
 };

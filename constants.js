@@ -15,6 +15,14 @@ const informations = {
     service: 'SERVICE',
 };
 
+const duration = {
+    today: 'TODAY',
+    yesterday: 'YESTERDAY',
+    week: 'WEEK',
+    week4: 'WEEK4',
+    lifetime: 'LIFETIME',
+};
+
 const answer = {
     yes: 'YES',
     no: 'NO',
@@ -50,6 +58,23 @@ const infoSubOptions = {
         Trend: informations.trend,
         Manual: informations.manual,
         'Castr Services': informations.service,
+    },
+};
+
+const durationOptions = {
+    kr: {
+        오늘: duration.today,
+        어제: duration.yesterday,
+        '최근 1주': duration.week,
+        '최근 4주': duration.week4,
+        '전체 기간': duration.lifetime,
+    },
+    en: {
+        Today: duration.today,
+        Yesterday: duration.yesterday,
+        'Past week': duration.week,
+        'Past 4 weeks': duration.week4,
+        Lifetime: duration.lifetime,
     },
 };
 
@@ -96,11 +121,28 @@ const confirm = {
 };
 
 const castrHost = 'http://api.dev.castr.ai/api/';
+const fbCastHost = 'http://fbcast.castr.ai/';
 const blogListUrl = `${castrHost}blog`;
 const dateTimeListUrl = `${castrHost}support/appointment`;
+const businessUrl = accountId => `${castrHost}companies/${accountId}/restaurants`;
+const promotionUrl = castrbizId => `${castrHost}restaurants/${castrbizId}/promotions`;
+const reportUrl = `${fbCastHost}insight/summary`;
 
 const locale = 'kr';
 const timezone = 'Asia/Seoul';
+
+const platform = {
+    kr: {
+        facebook: '페이스북',
+        instagram: '인스타그램',
+        audienceNetwork: '어디언스 네트워크',
+    },
+    en: {
+        facebook: 'Facebook',
+        instagram: 'Instagram',
+        audienceNetwork: 'Audience network',
+    },
+};
 
 exports.features = features;
 exports.informations = informations;
@@ -111,6 +153,9 @@ exports.castrHost = castrHost;
 exports.urls = {
     blog: blogListUrl,
     supportDateTime: dateTimeListUrl,
+    business: businessUrl,
+    promotion: promotionUrl,
+    report: reportUrl,
 };
 exports.custom = custom;
 exports.dateFormat = dateFormat;
@@ -123,3 +168,6 @@ exports.nameFormat = nameFormat;
 exports.phoneFormat = phoneFormat;
 exports.locale = locale;
 exports.timezone = timezone;
+exports.duration = duration;
+exports.durationOptions = durationOptions;
+exports.platform = platform;
